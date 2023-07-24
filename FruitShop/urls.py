@@ -15,10 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
-from FruitShop.view import index
+from FruitShop.views import index
+from FruitShop import views
 
 urlpatterns = [
     path('', index, name='index'),
+    path('logout/', views.logout_page, name='logout_page'),
+
 ]

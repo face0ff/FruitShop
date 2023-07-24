@@ -14,37 +14,149 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-12 p-5 border" style="background-color: lawngreen">
-            <!-- Добавлен класс "border" для создания рамки вокруг блока -->
+        <div class="col-8 p-2 border" style="background-color: aliceblue"><h1>FruitShop</h1></div>
+        <div class="col-4  d-flex align-items-center">
+
+            {% if request.user.is_authenticated %}
+                <h5 style="padding-right: 20px; padding-top: 10px">Кто это у нас такой красивый >>{{ user.username }}</h5>
+                <a href="{% url 'logout_page' %}" class="btn btn-lg btn-primary btn-block">Выйти</a>
+
+            {% else %}
+                <form method="post">
+                {% csrf_token %}
+                    {% if messages %}{% for message in messages %} <p>{{ message }}</p> {% endfor %}{% endif %}
+                    <div style="background-color: lawngreen; display: flex;">
+                        <input type="username" name="username" class="form-control" placeholder="логин">
+                        <input type="password" name="password" class="form-control" placeholder="пароль">
+
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+                    </div>
+                </form>
+            {% endif %}
+
+
         </div>
     </div>
     <div class="row">
         <div class="col-8 p-5 border" style="background-color: #9493bd">
-            <!-- Добавлен класс "border" для создания рамки вокруг блока -->
+            <div class="row">
+                <div class="col border" style="background-color: #ffdc09">
+
+                    <table class="table">
+                        <thead>
+                        <h4 style="text-align: center">Товары на складе</h4>
+                        <tr>
+                            <th scope="col">Название</th>
+                            <th scope="col">Текушее количество</th>
+                            <th scope="col">Действие</th>
+                            <th scope="col">Последняя операция</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in items %}
+                            <tr>
+
+                                <th scope="row"> {{ item.name }}</th>
+                                <th scope="row"> {{ item.balance }}</th>
+                                <th scope="row">
+                                    <div style="display: flex; align-items: center;">
+                                        <input type="number" class="form-control" placeholder="Количество">
+                                        <input type="button" class="btn"
+                                               style="width: 120px; display: inline-block; background-color: #02fccb"
+                                               value="Купить">
+                                        <input type="button" class="btn"
+                                               style="width: 120px; display: inline-block; background-color: #09e7d1"
+                                               value="Продать">
+                                    </div>
+
+                                </th>
+                                <th scope="row">{{ item.last_transaction }}</th>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col border" style="background-color: #fcfcfc;">
+                    <div class="row">
+                        <div class="col-12 border"
+                             style="background-color: #f0f0f0; height: 300px; max-height: 739px; overflow-y: scroll;">
+                            1234
+                            34534
+                            345345
+                            34534
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col" style="display: flex;">
+                            <input type="number" class="form-control" placeholder="Текст">
+                            <input type="button" class="btn"
+                                   style="width: 120px; background-color: #02fccb"
+                                   value="Отправить">
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col border" style="background-color: #f0f0f0;">
+                    <div class="row">
+                        <div class="col" style="text-align: center"><h4 style="text-align: center">Банк</h4></div>
+                    </div>
+                    <div class="row">
+                        <div class="col border p-2" style="text-align: center">Банковский счет</div>
+                        <div class="col border p-2" style="text-align: center">{{ bank_score.score }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col border p-2" style="text-align: center">
+                            <button onclick="checkStockOperation()">Запустить длительную операцию</button>
+                            <input id="" type="button" class="btn"
+                                   style="width: auto; display: inline-block; background-color: #ff8f00"
+                                   value="Провести бухгалтерский учет">
+
+                        </div>
+                        <div class="col border p-2" style="text-align: center">проценты</div>
+                    </div>
+                    <div class="row">
+                        <div class="col border p-2" style="text-align: center">
+                            <input id="" type="number" class="form-control" placeholder="Сумма">
+                        </div>
+                        <div class="col border p-2" style="text-align: center">
+                            <input id="" type="button" class="btn"
+                                   style="width: 120px; display: inline-block; background-color: #00ffd1"
+                                   value="Пополнить">
+                            <input id="" type="button" class="btn"
+                                   style="width: 120px; display: inline-block; background-color: #00ffd9"
+                                   value="Вывести">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col border p-2" style="text-align: center">
+                            <input id="" type="button" class="btn"
+                                   style="width: auto; display: inline-block; background-color: #00ffd9"
+                                   value="Загрузить декларацию">
+                        </div>
+                        <div class="col border p-2" style="text-align: center">
+                            Сегодня загружено: 0 шт.
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-4 border" style="background-color: #f0f0f0; height: fit-content">
+        <div class="col-4 border"
+             style="background-color: #f0f0f0; height: fit-content; max-height: 739px; overflow-y: scroll;">
+
             {% for transaction in transactions %}
-                <li>
-                    <strong>{{transaction.date}} - {{transaction.answer}}: Продажа товара "{{transaction.fruit_id.name}}"(количество: {{transaction.quantity}}). К счёту добавлено {{transaction.price}} USD, продажа завершена.<br>
-                    <strong>Дата:</strong> {{ transaction.date }}<br>
-                </li>
+                <strong>{{ transaction.date }} - {{ transaction.answer }}: Продажа товара
+                "{{ transaction.fruit_id.name }}"(количество: {{ transaction.quantity }}). К счёту
+                добавлено {{ transaction.price }} USD, продажа завершена.<br>
+                <strong>Дата:</strong> {{ transaction.date }}<br>
             {% endfor %}
+
         </div>
     </div>
-    <div class="row">
-        <div class="col-8 p-5 border" style="background-color: #ffdc09">
-            <!-- Добавлен класс "border" для создания рамки вокруг блока -->
-        </div>
-        <div class="col-8 p-5 border" style="background-color: #fcfcfc;">
-           111 <!-- Добавлен класс "border" для создания рамки вокруг блока -->
-        </div>
-    </div>
-    <div class="row">
-        <!-- Новый див после 8-й колонки на 3 ряда вниз -->
-        <div class="col-8 p-5 border" style="background-color: #f0f0f0;">
-            <!-- Добавлен класс "border" для создания рамки вокруг блока -->
-        </div>
-    </div>
+
 </div>
 
 
@@ -54,6 +166,25 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+<script>
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/check_stock/');
+
+        socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            if (data.status === 'completed') {
+                alert(`Операция завершена за ${data.execution_time}`);
+            }
+        };
+
+        socket.onclose = function(e) {
+            console.error('WebSocket closed unexpectedly:', e);
+        };
+
+        function checkStockOperation() {
+            console.log('nazal')
+            socket.send(JSON.stringify({ 'message': true }));
+        }
+    </script>
 
 <!-- Вариант 2: Bootstrap JS отдельно от Popper
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
