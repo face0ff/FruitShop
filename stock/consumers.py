@@ -15,11 +15,13 @@ class CheckStockConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         message = data['message']
         print(message)
-        result = check_stock_task.delay()
+        result = check_stock_task.delay(self.channel_name)  # Pass the channel_name to the task
+        self.result_task_id = result.id
 
-        execution_time = result.get()
-        print(execution_time)
+    async def send_progress(self, event):
+        progress = event['progress']
         await self.send(text_data=json.dumps({
             'status': 'completed',
-            'execution_time': execution_time,
+            'audit_progress': progress,
         }))
+
