@@ -1,11 +1,14 @@
 import os
 from celery import Celery
-from celery.schedules import crontab
+
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "FruitShop.settings")
 app = Celery('FruitShop', backend='redis')
 app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
+
+
+
 
 app.conf.beat_schedule = {
     'add-every-6-seconds_buy': {
@@ -56,6 +59,11 @@ app.conf.beat_schedule = {
         'options': {'queue': 'sell'},
         'args': (15,),
     },
+    # 'add-joke-6': {
+    #     'task': 'chat.tasks.task_print_joke',
+    #     'options': {'queue': 'joke'},
+    # },
+
 }
 
 app.conf.timezone = 'UTC'

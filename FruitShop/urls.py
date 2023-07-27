@@ -23,5 +23,6 @@ from FruitShop import views
 urlpatterns = [
     path('', index, name='index'),
     path('logout/', views.logout_page, name='logout_page'),
+    path('', views.start_joke, name='start_joke')
 
 ]

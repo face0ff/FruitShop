@@ -25,3 +25,20 @@ class CheckStockConsumer(AsyncWebsocketConsumer):
             'audit_progress': progress,
         }))
 
+
+
+class ChangeStockConsumer(AsyncWebsocketConsumer):
+    print('tyt')
+    async def connect(self):
+        await self.channel_layer.group_add('updates_stock', self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard('updates_stock', self.channel_name)
+
+    async def updates_stock(self, event):
+        data = event['data']
+        await self.send(text_data=json.dumps({
+            'type': 'updates_stock',
+            'data': data,
+        }))

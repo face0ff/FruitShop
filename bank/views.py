@@ -6,8 +6,7 @@ from bank.models import Bank
 
 
 # Create your views here.
-def edit_bank(price, status):
-    print('bank_edit')
+def edit_bank(price, status, last_transaction):
     bank_score = Bank.objects.first()
     if status:
         bank_score.score = bank_score.score - price
@@ -19,6 +18,7 @@ def edit_bank(price, status):
     channel_layer = get_channel_layer()
     data = {
         'score': bank_score.score,
+        'transaction': last_transaction
     }
     async_to_sync(channel_layer.group_send)('updates', {
         'type': 'update_bank',
