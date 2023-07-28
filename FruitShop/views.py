@@ -70,7 +70,7 @@ def index(request):
         files = File.objects.filter(date__day=current_day).count()
     else:
         files = 0
-    chat = Chat.objects.order_by('date')[:40]
+    chat = Chat.objects.all().order_by('-id')[:40][::-1]
     transactions = Transaction.objects.order_by('-id')[:40]
     items = Stock.objects.all()
     bank_score = Bank.objects.first()

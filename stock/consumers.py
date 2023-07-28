@@ -20,10 +20,16 @@ class CheckStockConsumer(AsyncWebsocketConsumer):
 
     async def send_progress(self, event):
         progress = event['progress']
-        await self.send(text_data=json.dumps({
-            'status': 'completed',
-            'audit_progress': progress,
-        }))
+        if progress == 1:
+            await self.send(text_data=json.dumps({
+                'status': 'start',
+                'audit_progress': progress,
+            }))
+        else:
+            await self.send(text_data=json.dumps({
+                'status': 'completed',
+                'audit_progress': progress,
+            }))
 
 
 

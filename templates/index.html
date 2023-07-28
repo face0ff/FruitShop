@@ -178,6 +178,7 @@
         }
 
         $('.buy').click(function (){
+            {% if request.user.is_authenticated %}
             const count = $('#number_'+this.id).val();
             $.ajax({
                 url: '{% url 'buy_fruit' %}',
@@ -195,8 +196,12 @@
                     showNotification('При покупке ошибочка вышла!', 'error');
                 }
             });
+            {% else %}
+                toastr.error('Ты кто такой а?', { timeOut: 5000 });
+            {% endif %}
         });
         $('.sell').click(function (){
+            {% if request.user.is_authenticated %}
             const count = $('#number_'+this.id).val();
             $.ajax({
                 url: '{% url 'sell_fruit' %}',
@@ -214,6 +219,9 @@
                     showNotification('При продажи возникла ошибка!', 'error');
                 }
             });
+            {% else %}
+                toastr.error('Ты кто такой а?', { timeOut: 5000 });
+            {% endif %}
         });
 
         $.ajax({
@@ -228,6 +236,7 @@
         });
 
         $('#add_bank').click(function (){
+            {% if request.user.is_authenticated %}
             const amount = $('#amount').val();
             $.ajax({
                 url: '{% url 'add_bank' %}',
@@ -244,8 +253,12 @@
                     showNotification('Не очень!', 'error');
                 }
             });
+            {% else %}
+                toastr.error('Ты кто такой а?', { timeOut: 5000 });
+            {% endif %}
         });
         $('#sub_bank').click(function (){
+            {% if request.user.is_authenticated %}
             const amount = $('#amount').val();
             $.ajax({
                 url: '{% url 'sub_bank' %}',
@@ -262,11 +275,18 @@
                     showNotification('Не очень!', 'error');
                 }
             });
+            {% else %}
+                toastr.error('Ты кто такой а?', { timeOut: 5000 });
+            {% endif %}
         });
         $('#tap_file').click(function (){
-            $('#hidden_file').trigger('click');
-            console.log(this)
-        })
+            {% if request.user.is_authenticated %}
+                $('#hidden_file').trigger('click');
+                console.log(this);
+            {% else %}
+                toastr.error('Ты кто такой а?', { timeOut: 5000 });
+            {% endif %}
+        });
         $('#hidden_file').change(function() {
             // Get the selected file
             const selectedFile = this.files[0];
@@ -309,13 +329,17 @@
     socket.onmessage = function (e) {
         const data = JSON.parse(e.data);
         console.log(data)
-        if (data.status === 'completed') {
+        if (data.status === 'start') {
             updateProgressBar(data.audit_progress);
+            toastr.success('Проводиться бугалтерский учет, не переключайтесь.', {timeOut: 15000})
 
         }
+        if (data.status === 'completed') {
+            updateProgressBar(data.audit_progress);
+         }
         if (data.audit_progress === 100) {
             updateProgressBar(0);
-
+            toastr.success('Ну все мы попали', {timeOut: 5000})
         }
     };
 
@@ -324,8 +348,12 @@
     };
 
     function checkStockOperation() {
-        console.log('nazal')
-        socket.send(JSON.stringify({'message': true}));
+        {% if request.user.is_authenticated %}
+            console.log('nazal')
+            socket.send(JSON.stringify({'message': true}));
+        {% else %}
+            toastr.error('Ты кто такой а?', { timeOut: 5000 });
+        {% endif %}
     }
 
 
