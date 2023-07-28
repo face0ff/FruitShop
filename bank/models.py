@@ -6,3 +6,4 @@ class Bank(models.Model):
 
 class File(models.Model):
     file = models.FileField('Декларация', upload_to='file/')
+    date = models.DateField('Дата загрузки', auto_now_add=True)

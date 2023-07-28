@@ -6,7 +6,7 @@ from bank.models import Bank
 
 
 # Create your views here.
-def edit_bank(price, status, last_transaction):
+def edit_bank(price, status, last_transaction=None):
     bank_score = Bank.objects.first()
     if status:
         bank_score.score = bank_score.score - price
@@ -24,3 +24,4 @@ def edit_bank(price, status, last_transaction):
         'type': 'update_bank',
         'data': data,
     })
+

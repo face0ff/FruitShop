@@ -12,79 +12,68 @@ from transaction.models import Transaction
 
 
 @app.task()
-def buy(time):
+def buy(id, count=None):
     transaction = Transaction.objects.create()
     score = Bank.objects.first().score
-    if time == 6:
-        instance = Stock.objects.get(name='Яблоки')
-        try:
-            price = 4
+    print(id)
+    if id == 1:
+        instance = Stock.objects.get(id=id)
+        price = 4
+        if count:
+            item = count
+        else:
             item = random.randint(1, 10)
-            if score >= item * price:
-                instance.balance = instance.balance + item
-                transaction.answer = 'SUCCESS'
-            else:
-                transaction.answer = 'ERROR'
-            transaction.quantity = item
-            transaction.price = item * price
-            print(f'Купили яблок {item}')
-            print(f"Всего яблок {instance.balance}")
-        except:
-            transaction.answer = 'ERROR'
-            print('Недостаточно средств')
-
-    elif time == 9:
-        instance = Stock.objects.get(name='Бананы')
-        try:
-            price = 1
-            item = random.randint(10, 20)
-            if score >= item * price:
-                instance.balance = instance.balance + item
-                transaction.answer = 'SUCCESS'
-            else:
-                transaction.answer = 'ERROR'
-            transaction.quantity = item
-            transaction.price = item * price
-            print(f'Купили бананов {item}')
-            print(f"Всего бананов {instance.balance}")
-        except:
-            transaction.answer = 'ERROR'
-            print('Недостаточно средств')
-    elif time == 12:
-        instance = Stock.objects.get(name='Ананасы')
-        try:
-            price = 3
-            item = random.randint(1, 10)
-            if score >= item * price:
-                instance.balance = instance.balance + item
-                transaction.answer = 'SUCCESS'
-            else:
-                transaction.answer = 'ERROR'
-            transaction.quantity = item
-            transaction.price = item * price
-            print(f'Купили ананасы {item}')
-            print(f"Всего ананасы {instance.balance}")
-        except:
-            transaction.answer = 'ERROR'
-            print('Недостаточно средств')
-    else:
-        instance = Stock.objects.get(name='Персики')
-        try:
-            price = 2
-            item = random.randint(5, 15)
-            if score >= item * price:
-                instance.balance = instance.balance + item
-                transaction.answer = 'SUCCESS'
-            else:
-                transaction.answer = 'ERROR'
+        if score >= item * price:
+            instance.balance = instance.balance + item
             transaction.answer = 'SUCCESS'
-            transaction.quantity = item
-            transaction.price = item * price
-            print(f'Купили Персики {item}')
-            print(f"Всего Персики {instance.balance}")
-        except:
+        else:
             transaction.answer = 'ERROR'
-            print('Недостаточно средств')
+        transaction.quantity = item
+        transaction.price = item * price
+
+    if id == 2:
+        instance = Stock.objects.get(id=id)
+        price = 1
+        if count:
+            item = count
+        else:
+            item = random.randint(10, 20)
+        if score >= item * price:
+            instance.balance = instance.balance + item
+            transaction.answer = 'SUCCESS'
+        else:
+            transaction.answer = 'ERROR'
+        transaction.quantity = item
+        transaction.price = item * price
+
+    if id == 3:
+        instance = Stock.objects.get(id=id)
+        price = 3
+        if count:
+            item = count
+        else:
+            item = random.randint(1, 10)
+        if score >= item * price:
+            instance.balance = instance.balance + item
+            transaction.answer = 'SUCCESS'
+        else:
+            transaction.answer = 'ERROR'
+        transaction.quantity = item
+        transaction.price = item * price
+    else:
+        instance = Stock.objects.get(id=id)
+        price = 2
+        if count:
+            item = count
+        else:
+            item = random.randint(5, 15)
+        if score >= item * price:
+            instance.balance = instance.balance + item
+            transaction.answer = 'SUCCESS'
+        else:
+            transaction.answer = 'ERROR'
+        transaction.quantity = item
+        transaction.price = item * price
 
     if transaction.answer == 'SUCCESS':
         last_transaction = f'{datetime.datetime.now()} - {transaction.answer}: Поставщик привёз товар "{instance.name}"(количество: {transaction.quantity}). Со счёта списано {transaction.price} USD, покупка завершена.'
@@ -101,80 +90,64 @@ def buy(time):
     transaction.save()
 
 @app.task()
-def sell(time):
+def sell(id, count=None):
     transaction = Transaction.objects.create()
-    if time == 6:
-        instance = Stock.objects.get(name='Яблоки')
-        try:
-            price = 5
-            transaction.answer = 'SUCCESS'
+    if id == 1:
+        instance = Stock.objects.get(id=id)
+        price = 5
+        transaction.answer = 'SUCCESS'
+        if count:
+            item = count
+        else:
             item = random.randint(1, 10)
-            if instance.balance - item < 0:
-                transaction.answer = 'ERROR'
-                print('Недостаточно яблок')
-            else:
-                instance.balance = instance.balance - item
-            transaction.quantity = item
-            transaction.price = item * price
-            print(f'Продали яблок {item}')
-            print(f"Всего яблок {instance.balance}")
-        except:
+        if instance.balance - item < 0:
             transaction.answer = 'ERROR'
-            print('Недостаточно яблок')
-    elif time == 9:
-        instance = Stock.objects.get(name='Бананы')
-        try:
-            price = 2
-            transaction.answer = 'SUCCESS'
+        else:
+            instance.balance = instance.balance - item
+        transaction.quantity = item
+        transaction.price = item * price
+    if id == 2:
+        instance = Stock.objects.get(id=id)
+        price = 2
+        transaction.answer = 'SUCCESS'
+        if count:
+            item = count
+        else:
             item = random.randint(10, 20)
-            if instance.balance - item < 0:
-                transaction.answer = 'ERROR'
-                print('Недостаточно бананов')
-            else:
-                instance.balance = instance.balance - item
-            transaction.quantity = item
-            transaction.price = item * price
-            print(f'Продали бананов {item}')
-            print(f"Всего бананов {instance.balance}")
-        except:
+        if instance.balance - item < 0:
             transaction.answer = 'ERROR'
-            print('Недостаточно бананов')
-    elif time == 12:
-        instance = Stock.objects.get(name='Ананасы')
-        try:
-            price = 4
-            transaction.answer = 'SUCCESS'
+        else:
+            instance.balance = instance.balance - item
+        transaction.quantity = item
+        transaction.price = item * price
+    if id == 3:
+        instance = Stock.objects.get(id=id)
+        price = 4
+        transaction.answer = 'SUCCESS'
+        if count:
+            item = count
+        else:
             item = random.randint(1, 10)
-            if instance.balance - item < 0:
-                transaction.answer = 'ERROR'
-                print('Недостаточно ананасов')
-            else:
-                instance.balance = instance.balance - item
-            transaction.quantity = item
-            transaction.price = item * price
-            print(f'Продали ананасы {item}')
-            print(f"Всего ананасы {instance.balance}")
-        except:
+        if instance.balance - item < 0:
             transaction.answer = 'ERROR'
-            print('Недостаточно ананасов')
+        else:
+            instance.balance = instance.balance - item
+        transaction.quantity = item
+        transaction.price = item * price
     else:
-        instance = Stock.objects.get(name='Персики')
-        try:
-            price = 3
-            transaction.answer = 'SUCCESS'
+        instance = Stock.objects.get(id=id)
+        price = 3
+        transaction.answer = 'SUCCESS'
+        if count:
+            item = count
+        else:
             item = random.randint(5, 15)
-            if instance.balance - item < 0:
-                transaction.answer = 'ERROR'
-                print('Недостаточно персиков')
-            else:
-                instance.balance = instance.balance - item
-            transaction.quantity = item
-            transaction.price = item * price
-            print(f'Продали персики {item}')
-            print(f"Всего персиков {instance.balance}")
-        except:
+        if instance.balance - item < 0:
             transaction.answer = 'ERROR'
-            print('Недостаточно персиков')
+        else:
+            instance.balance = instance.balance - item
+        transaction.quantity = item
+        transaction.price = item * price
     if transaction.answer == 'SUCCESS':
         last_transaction = f'{datetime.datetime.now()} - {transaction.answer}: Продажа товара "{instance.name}"(количество: {transaction.quantity}). К счёту добавлено {transaction.price} USD, продажа завершена.'
     else:
