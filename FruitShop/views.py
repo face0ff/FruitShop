@@ -23,15 +23,15 @@ def buy_fruit(request):
     fruit_id = request.GET.get('id')
     count = request.GET.get('count')
     print(fruit_id, count)
-    buy(int(fruit_id), int(count))
-    return HttpResponse(f"Fruit ID: {fruit_id}")
+    response = buy(int(fruit_id), int(count))
+    return HttpResponse({response})
 
 def sell_fruit(request):
     fruit_id = request.GET.get('id')
     count = request.GET.get('count')
     print(fruit_id, count)
-    sell(int(fruit_id), int(count))
-    return HttpResponse(f"Fruit ID: {fruit_id}")
+    response = sell(int(fruit_id), int(count))
+    return HttpResponse({response})
 
 def add_bank(request):
     amount = request.GET.get('amount')

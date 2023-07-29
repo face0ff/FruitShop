@@ -86,12 +86,18 @@ def buy(id, count=None):
     instance.save()
     transaction.status = True
     transaction.fruit_id = instance
-    edit_bank(transaction.price, True, last_transaction)
-    transaction.save()
+    if transaction.answer == 'SUCCESS':
+        edit_bank(transaction.price, True, last_transaction)
+        transaction.save()
+        return True
+    else:
+        transaction.save()
+        return False
 
 @app.task()
 def sell(id, count=None):
     transaction = Transaction.objects.create()
+    score = Bank.objects.first().score
     if id == 1:
         instance = Stock.objects.get(id=id)
         price = 5
@@ -158,5 +164,10 @@ def sell(id, count=None):
     instance.save()
     transaction.status = False
     transaction.fruit_id = instance
-    edit_bank(transaction.price, False, last_transaction)
-    transaction.save()
+    if transaction.answer == 'SUCCESS':
+        edit_bank(transaction.price, False, last_transaction)
+        transaction.save()
+        return True
+    else:
+        transaction.save()
+        return False

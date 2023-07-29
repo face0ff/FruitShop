@@ -9,8 +9,10 @@ from bank.models import Bank
 def edit_bank(price, status, last_transaction=None):
     bank_score = Bank.objects.first()
     if status:
+        print('buy')
         bank_score.score = bank_score.score - price
     else:
+        print('sell')
         bank_score.score = bank_score.score + price
 
     bank_score.save()
