@@ -15,9 +15,11 @@ from chat.tasks import task_print_joke
 from transaction.tasks import buy, sell
 
 
-def start_joke():
+def start_joke(request):
+    print('111111111111111111111111111111111111111111111111')
     # joke = Chat.objects.count()
     task_print_joke.apply_async(queue='joke')
+    return HttpResponse({True})
 
 def buy_fruit(request):
     fruit_id = request.GET.get('id')

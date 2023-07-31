@@ -15,7 +15,6 @@ from transaction.models import Transaction
 def buy(id, count=None):
     transaction = Transaction.objects.create()
     score = Bank.objects.first().score
-    print(id)
     if id == 1:
         instance = Stock.objects.get(id=id)
         price = 4
@@ -79,8 +78,6 @@ def buy(id, count=None):
         last_transaction = f'{datetime.datetime.now()} - {transaction.answer}: Поставщик привёз товар "{instance.name}"(количество: {transaction.quantity}). Со счёта списано {transaction.price} USD, покупка завершена.'
     else:
         last_transaction = f'{datetime.datetime.now()} - {transaction.answer}: Поставщик привёз товар "{instance.name}"(количество: {transaction.quantity}). Ошибка покупки!'
-
-    print(last_transaction)
     instance.last_transaction = last_transaction
     updates_stock(instance)
     instance.save()
@@ -158,7 +155,6 @@ def sell(id, count=None):
         last_transaction = f'{datetime.datetime.now()} - {transaction.answer}: Продажа товара "{instance.name}"(количество: {transaction.quantity}). К счёту добавлено {transaction.price} USD, продажа завершена.'
     else:
         last_transaction = f'{datetime.datetime.now()} - {transaction.answer}: Продажа товара "{instance.name}"(количество: {transaction.quantity}). Ошибка продажи.'
-    print(last_transaction)
     instance.last_transaction = last_transaction
     updates_stock(instance)
     instance.save()
